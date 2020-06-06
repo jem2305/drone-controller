@@ -8,11 +8,30 @@ vehicle = DummyVehicle()
 
 
 @app.route('/')
-def index():
-    return vehicle.drive_module.get_current_speed().name
+def get_vehicle_status():
+    status = 'Speed: {speed}\nDirection: {direction}'.format(
+        speed=vehicle.drive_module.get_current_speed().name,
+        direction=vehicle.steering_module.get_current_direction().name
+    )
+    return status
 
+@app.route('/forward')
+def forward():
+    ret = loop.call_soon_threadsafe(vehicle.drive_module.go_forward(timeout_ms=5000))
+    return get_vehicle_status()
 
-@app.route('/doSomething')
-def do_something():
-    ret = loop.run_until_complete(vehicle.drive_module.go_forward(timeout_ms=10000))
-    return ret.name
+@app.route('/backward')
+def backward():
+    ret = loop.run_until_complete(vehicle.drive_module.go_backward(timeout_ms=5000))
+    return get_vehicle_status()
+
+@app.route('/left')
+def left():
+    ret = loop.run_until_complete(vehicle.steering_module.steer_left(timeout_ms=5000))
+    return get_vehicle_status()
+
+@app.route('/right')
+def right():
+    ret = loop.run_until_complete(vehicle.steering_module.steer_right(timeout_ms=5000))
+    return get_vehicle_status()
+
