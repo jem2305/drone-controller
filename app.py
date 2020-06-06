@@ -17,21 +17,21 @@ def get_vehicle_status():
 
 @app.route('/forward')
 def forward():
-    ret = loop.call_soon_threadsafe(vehicle.drive_module.go_forward(timeout_ms=5000))
+    ret = loop.run_until_complete(vehicle.drive_module.go_backward(timeout_ms=10000))
     return get_vehicle_status()
 
 @app.route('/backward')
 def backward():
-    ret = loop.run_until_complete(vehicle.drive_module.go_backward(timeout_ms=5000))
+    ret = loop.run_until_complete(vehicle.drive_module.go_backward(timeout_ms=10000))
     return get_vehicle_status()
 
 @app.route('/left')
 def left():
-    ret = loop.run_until_complete(vehicle.steering_module.steer_left(timeout_ms=5000))
+    ret = loop.run_until_complete(vehicle.steering_module.steer_left(timeout_ms=10000))
     return get_vehicle_status()
 
 @app.route('/right')
 def right():
-    ret = loop.run_until_complete(vehicle.steering_module.steer_right(timeout_ms=5000))
+    ret = loop.run_until_complete(vehicle.steering_module.steer_right(timeout_ms=10000))
     return get_vehicle_status()
 
