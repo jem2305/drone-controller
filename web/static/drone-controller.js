@@ -8,15 +8,17 @@ minDeg = -30,
 initDeg = 0,
 deg = 0,
 
-maxX = window.innerWidth/2-130/2 + 150,
-minX = window.innerWidth/2-130/2 - 150,
-initX = window.innerWidth/2-130/2,
-x = window.innerWidth/2-130/2,
+maxX = window.innerWidth/2-124/2 + 45,
+minX = window.innerWidth/2-124/2 - 45,
+initX = window.innerWidth/2-124/2,
+x = window.innerWidth/2-124/2,
 
-maxY = window.innerHeight/2-130/2 + 150,
-minY = window.innerHeight/2-130/2 - 150,
-initY = window.innerHeight/2-130/2,
-y = window.innerHeight/2-130/2
+maxY = window.innerHeight/2-250/2 + 75,
+minY = window.innerHeight/2-250/2 - 75,
+initY = window.innerHeight/2-250/2,
+y = window.innerHeight/2-250/2
+
+centerLineMargin = -5000
 
 document.addEventListener('keydown',press)
 function press(e){
@@ -32,6 +34,7 @@ function press(e){
   if (e.keyCode === 37 /* left */ || e.keyCode === 65 /* a */ || e.keyCode === 81 /* q */){
     left = true
   }
+  sendDroneCommands(up, down, left, right)
 }
 document.addEventListener('keyup',release)
 function release(e){
@@ -47,6 +50,18 @@ function release(e){
   if (e.keyCode === 37 /* left */ || e.keyCode === 65 /* a */ || e.keyCode === 81 /* q */){
     left = false
   }
+  sendDroneCommands(up, down, left, right)
+}
+function updateStatusWithResponse(statusResponse) {
+  var droneResponse = JSON.parse(statusResponse);
+
+  var droneSpeedDiv = document.getElementById("drone-speed");
+  var droneDirectionDiv = document.getElementById("drone-drive-direction");
+  var droneSteeringDiv = document.getElementById("drone-steering-direction");
+
+  droneSpeedDiv.textContent = droneResponse.speed;
+  droneDirectionDiv.textContent = droneResponse.driveDirection;
+  droneSteeringDiv.textContent = droneResponse.steeringDirection;
 }
 function sendDroneCommand(direction){
   var xhr = new XMLHttpRequest();
@@ -54,7 +69,7 @@ function sendDroneCommand(direction){
   xhr.onload = function (e) {
     if (xhr.readyState === 4) {
       if (xhr.status === 200) {
-        console.log(xhr.responseText);
+        updateStatusWithResponse(xhr.response);
       } else {
         console.error(xhr.statusText);
       }
@@ -65,20 +80,31 @@ function sendDroneCommand(direction){
   };
   xhr.send(null); 
 }
-function gameLoop(){
-  var div = document.querySelector('img')
-  if(up) {
+function sendDroneCommands(up, down, left, right) {
+  if (up) {
     sendDroneCommand("forward")
   }
-  if(down) {
-    sendDroneCommand("backward")
+  else if (down) {
+    sendDroneCommand("reverse")
   }
-  if(left) {
+  else {
+    sendDroneCommand("stop")
+  }
+
+  if (left) {
     sendDroneCommand("left")
   }
-  if(right) {
+  else if (right) {
     sendDroneCommand("right")
   }
+  else {
+    sendDroneCommand("straight")
+  }
+}
+function gameLoop(){
+  var car = document.getElementById('car')
+  var road = document.getElementById('road')
+  var roadCenterLine = document.getElementById('road-center-line')
 
   if (up && !(y < minY)){
     y = y - 10
@@ -95,19 +121,18 @@ function gameLoop(){
   }
 
   if (((!down && right) || (down && left)) && !(deg > maxDeg)){
-    deg = deg + 5
+    deg = deg + 2.5
   }
   if (((!down && left) || (down && right)) && !(deg < minDeg)){
-    deg = deg - 5
+    deg = deg - 2.5
   }
 
   if(!(left || right) && deg != initDeg) {
-    if (deg > initDeg) { deg = deg - Math.min(10, deg) }
-    else if (deg < initDeg) { deg = deg + Math.min(10, Math.abs(deg)) }
-
+    if (deg > initDeg) { deg = deg - Math.min(2.5, deg) }
+    else if (deg < initDeg) { deg = deg + Math.min(2.5, Math.abs(deg)) }
   }
 
-  if(!(left || right || up || down) && x != initX) {
+  if(!((left || right) && (up || down)) && x != initX) {
     if (x > initX) { x = x - Math.min(10, x - initX) }
     else { x = x + Math.min(10, initX - x) }
   }
@@ -118,15 +143,28 @@ function gameLoop(){
     else { y = y + Math.min(10, initY - y) }
   }
 
-  div.style.left = x+'px'
-  div.style.top = y+'px'
+  car.style.left = x+'px'
+  car.style.top = y+'px'
 
   if (deg < 0) {
-    div.style.transform = 'rotate(+'+ (360 + deg) +'deg)'
+    car.style.transform = 'rotate(+'+ (360 + deg) +'deg)'
+    road.style.transform = 'rotate(+'+ (360 + deg) +'deg)'
   }
   else {
-    div.style.transform = 'rotate(+'+ deg +'deg)'
+    car.style.transform = 'rotate(+'+ deg +'deg)'
+    road.style.transform = 'rotate(+'+ deg +'deg)'
   }
+
+  if (up) {
+    centerLineMargin = centerLineMargin >= -500 ? -5000 : centerLineMargin + 3;
+  }
+  else if (down) {
+    centerLineMargin = centerLineMargin <= -9500 ? -5000 : centerLineMargin - 3;
+  }
+  roadCenterLine.style.marginTop = centerLineMargin+'px';
+
   window.requestAnimationFrame(gameLoop)
 }
 window.requestAnimationFrame(gameLoop)
+window.setInterval( function() { sendDroneCommands(up, down, left, right); }, 1000)
+sendDroneCommands(up, down, left, right)

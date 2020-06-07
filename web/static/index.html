@@ -1,13 +1,22 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>WASD Input</title>
+    <title>Drone UI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="drone-controller.css">
     <script src ="drone-controller.js"></script>
   </head>
 
   <body>
-    <img src="/car.png"></img>
+    <div id="road">
+      <div id="road-center-line"></div>
+    </div>
+    <img id="car" src="/car.png"></img>
+    <table class="statusTable">
+      <tr class="firstRow"><td>Speed</td></div><td id="drone-speed"></td></tr>
+      <tr><td>Direction</td></div><td id="drone-drive-direction"></td></tr>
+      <tr><td>Steering</td></div><td id="drone-steering-direction"></td></tr>
+    </table>
   </body>
 
 </html>

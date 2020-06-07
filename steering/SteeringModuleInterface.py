@@ -1,11 +1,10 @@
 from steering import SteeringDirection
-# from vehicle import VehicleInterface
 
 
 class SteeringModuleInterface:
 
-    # def __init__(self, vehicle: VehicleInterface):
     def __init__(self):
+        self.__current_direction = None
         pass
 
     async def steer_straight(self, timeout_ms: int):
@@ -17,5 +16,6 @@ class SteeringModuleInterface:
     async def steer_left(self, timeout_ms: int):
         pass
 
-    def get_current_direction(self) -> SteeringDirection:
+    @property
+    def current_direction(self) -> SteeringDirection:
         pass
