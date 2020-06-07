@@ -8,15 +8,10 @@ minDeg = -30,
 initDeg = 0,
 deg = 0,
 
-maxX = window.innerWidth/2-124/2 + 45,
-minX = window.innerWidth/2-124/2 - 45,
-initX = window.innerWidth/2-124/2,
-x = window.innerWidth/2-124/2,
-
-maxY = window.innerHeight/2-250/2 + 75,
-minY = window.innerHeight/2-250/2 - 75,
-initY = window.innerHeight/2-250/2,
-y = window.innerHeight/2-250/2
+maxX = window.innerHeight * 0.15 - 172/2,
+minX = -(window.innerHeight * 0.15) - 172/2,
+initX = 0 - 172/2,
+x = 0 - 172/2,
 
 centerLineMargin = -5000
 
@@ -106,24 +101,23 @@ function gameLoop(){
   var road = document.getElementById('road')
   var roadCenterLine = document.getElementById('road-center-line')
 
-  if (up && !(y < minY)){
-    y = y - 10
-  }
-  if (down && !(y > maxY)){
-    y = y + 10
-  }
-
-  if (right && (up || down) && !(x > maxX)) {
+  if (down && !(x > maxX)) {
     x = x + 10
   }
-  if (left && (up || down) && !(x < minX)) {
+  if (up && !(x < minX)) {
     x = x - 10
   }
 
-  if (((!down && right) || (down && left)) && !(deg > maxDeg)){
+  if (!(deg < minDeg) && down && right) {
+    deg = deg - 2.5
+  }
+  else if (!(deg > maxDeg) && down && left) {
     deg = deg + 2.5
   }
-  if (((!down && left) || (down && right)) && !(deg < minDeg)){
+  else if (!(deg > maxDeg) && right && !(down && right)) {
+    deg = deg + 2.5
+  }
+  else if (!(deg < minDeg) && left && !(down && left)) {
     deg = deg - 2.5
   }
 
@@ -132,26 +126,17 @@ function gameLoop(){
     else if (deg < initDeg) { deg = deg + Math.min(2.5, Math.abs(deg)) }
   }
 
-  if(!((left || right) && (up || down)) && x != initX) {
+  if(!(up || down) && x != initX) {
     if (x > initX) { x = x - Math.min(10, x - initX) }
     else { x = x + Math.min(10, initX - x) }
   }
 
-
-  if(!(up || down) && y != initY) {
-    if (y > initY) { y = y - Math.min(10, y - initY) }
-    else { y = y + Math.min(10, initY - y) }
-  }
-
-  car.style.left = x+'px'
-  car.style.top = y+'px'
+  car.style.marginTop = x+'px'
 
   if (deg < 0) {
-    car.style.transform = 'rotate(+'+ (360 + deg) +'deg)'
     road.style.transform = 'rotate(+'+ (360 + deg) +'deg)'
   }
   else {
-    car.style.transform = 'rotate(+'+ deg +'deg)'
     road.style.transform = 'rotate(+'+ deg +'deg)'
   }
 

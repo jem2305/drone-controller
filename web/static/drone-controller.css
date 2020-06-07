@@ -4,11 +4,6 @@ body {
     font-family: 'Open Sans', sans-serif;
 }
 
-#car {
-    position: fixed;
-    height: 250px;
-}
-
 .statusTable td {
     text-transform: lowercase;
     color: white;
@@ -46,19 +41,27 @@ body {
     overflow: hidden;
     position: fixed;
     height: 75vh;
-    min-height: 500px;
-    width: 250px;
-    margin-left: -130px;
+    width: 200px;
+    margin-left: -75px;
     left: 50%;
     top: 12.5%;
     border-color: #1a252f;
-    border-width: 10px;
+    border-width: 3px;
     border-style: none solid none solid;
 }
 
+#car {
+    position: fixed;
+    width: 86px;
+    left: 50%;
+    margin-left: -43px;
+    height: 172px;
+    top: 50%;
+}
+
 #road-center-line {
-    margin-left: 122px;
+    margin-left: 98px;
     margin-top: -10000px;
-    border-left: 6px dashed #fce205;
+    border-left: 4px dashed #fce205;
     height: 10000px;
 }
