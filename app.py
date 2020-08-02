@@ -85,6 +85,7 @@ def vehicle_close_handler():
 
 atexit.register(vehicle_close_handler)
 
+
 if __name__ == '__main__':
     app.debug = True
     app.run(threaded=True)
