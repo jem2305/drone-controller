@@ -3,8 +3,16 @@ class VehicleInterface:
     def __init__(self):
         self.__drive_moodule = None
         self.__steering_module = None
+        self.__is_connected = False
 
-    async def do_something(self):
+    async def connect_vehicle(self, connection_string):
+        pass
+
+    async def disconnect_vehicle(self):
+        pass
+
+    @property
+    def is_connected(self):
         pass
 
     @property

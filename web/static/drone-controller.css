@@ -70,3 +70,9 @@ body {
     background-size: 6px 40px;
     background-repeat: repeat-y;
 }
+
+#buttons {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+}

@@ -53,10 +53,12 @@ function updateStatusWithResponse(statusResponse) {
   var droneSpeedDiv = document.getElementById("drone-speed");
   var droneDirectionDiv = document.getElementById("drone-drive-direction");
   var droneSteeringDiv = document.getElementById("drone-steering-direction");
+  var droneConnectionStatusDiv = document.getElementById("drone-connection-status");
 
   droneSpeedDiv.textContent = droneResponse.speed;
   droneDirectionDiv.textContent = droneResponse.driveDirection;
   droneSteeringDiv.textContent = droneResponse.steeringDirection;
+  droneConnectionStatusDiv.textContent = droneResponse.isConnected;
 }
 function sendDroneCommand(direction){
   var xhr = new XMLHttpRequest();
@@ -150,6 +152,45 @@ function gameLoop(){
 
   window.requestAnimationFrame(gameLoop)
 }
+function sendConnectCommand() {
+  var xhr = new XMLHttpRequest();
+  xhr.open("GET", "http://localhost:5000/connect", true);
+  xhr.onload = function (e) {
+    if (xhr.readyState === 4) {
+      if (xhr.status === 200) {
+        updateStatusWithResponse(xhr.response);
+      } else {
+        console.error(xhr.statusText);
+      }
+    }
+  };
+  xhr.onerror = function (e) {
+    console.error(xhr.statusText);
+  };
+  xhr.send(null); 
+}
+function sendDisconnectCommand() {
+  var xhr = new XMLHttpRequest();
+  xhr.open("GET", "http://localhost:5000/disconnect", true);
+  xhr.onload = function (e) {
+    if (xhr.readyState === 4) {
+      if (xhr.status === 200) {
+        updateStatusWithResponse(xhr.response);
+      } else {
+        console.error(xhr.statusText);
+      }
+    }
+  };
+  xhr.onerror = function (e) {
+    console.error(xhr.statusText);
+  };
+  xhr.send(null); 
+}
 window.requestAnimationFrame(gameLoop)
 window.setInterval( function() { sendDroneCommands(up, down, left, right); }, 1000)
 sendDroneCommands(up, down, left, right)
+
+window.onload = (event) => {
+  document.getElementById("connect-button").addEventListener("click", sendConnectCommand);
+  document.getElementById("disconnect-button").addEventListener("click", sendDisconnectCommand);
+};

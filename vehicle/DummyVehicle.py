@@ -8,17 +8,30 @@ from drive import DummyDriveModule
 class DummyVehicle:
 
     def __init__(self):
+        self.__vehicle = None
         self.__drive_module = DummyDriveModule()
         self.__steering_module = DummySteeringModule()
+        self.__is_connected = False
         pass
 
-    def do_something(self):
-        asyncio.ensure_future(self.steering_module.steer_left(timeout_ms=2000))
-        asyncio.ensure_future(self.drive_module.go_forward(timeout_ms=2000))
+
+    async def connect_vehicle(self, connection_string):
+        self.__is_connected = True
+
+
+    async def disconnect_vehicle(self):
+        self.__is_connected = False
+
+
+    @property
+    def is_connected(self):
+        return self.__is_connected
+
 
     @property
     def drive_module(self):
         return self.__drive_module
+
 
     @property
     def steering_module(self):
