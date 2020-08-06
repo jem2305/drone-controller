@@ -79,11 +79,7 @@ def get_vehicle_status():
     )
 
 
-def vehicle_disconnect_handler():
-    vehicle.disconnect_vehicle()
-
-
-atexit.register(vehicle_disconnect_handler)
+atexit.register(disconnect)
 
 
 if __name__ == '__main__':
